@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Chiamate
+    {% if is_open %}
+    <span class="pull-right"><a href="/call" class="btn btn-info btn-sm"><i class="fa fa-plus"></i></a></span>
+    {% endif %}
+</h2>
+{% if open %}
+<div class="row ">
+    <div class="col-xs-4 left"><h5>GIOCATORE</h5></div>
+    <div class="col-xs-4 center"><h5>CHIAMATO DA</h5></div>
+    <div class="col-xs-4 right"></div>
+</div>
+
+{% for call in open %}
+<div class="row ">
+    <div class="col-xs-4 left">{{call.player}}</div>
+    <div class="col-xs-4 center">{{call.called_by}}</div>
+
+    <div class="col-xs-4 right">
+        {% if call.offers %}
+        {% for offer in call.offers %}
+        {{offer.price}} ({{offer.cut}})
+        {% endfor %}
+
+        <a href="/delete/{{call.id}}" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
+        {% else %}
+        <a href="/offer/{{call.id}}" class="btn btn-success btn-sm"><i class="fa fa-money"></i></a>
+        {% endif %}
+    </div>
+
+</div>
+{% endfor %}
+
+{%else%}
+<div class="center">
+    <i> Non ci sono chiamate </i>
+</div>
+{% endif %}
+
+
+<h2 class="center">Risultati</h2>
+{% if past %}
+<div class="row ">
+    <div class="col-xs-4 left"><h5>GIOCATORE</h5></div>
+    <div class="col-xs-4 center"><h5>CHIAMATO DA</h5></div>
+    <div class="col-xs-4 right"><h5>RISULTATI</h5></div>
+</div>
+{% for call in past %}
+<div class="row ">
+    <div class="col-xs-4 left">{{call.player}}</div>
+    <div class="col-xs-4 center">{{call.called_by}}</div>
+    <div class="col-xs-4 right">
+        <div class="row">
+            {% for offer in call.offers %}
+            <div class="col-sm-12">{{offer.team}} {{offer.price}} ({{offer.cut}})</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+{%else%}
+<div class="center">
+    <i> Non ci sono chiamate </i>
+</div>
+{% endif %}
+
+{% endblock  %}

@@ -1,0 +1,5 @@
+cron:
+- description: cron job for mail
+  url: /tasks/mail
+  schedule: every saturday 16:18
+  timezone: Europe/Rome

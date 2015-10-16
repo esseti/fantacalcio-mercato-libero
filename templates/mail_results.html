@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h2>>Risultati</h2>
+{% for c in open %}
+    {{c.player}} - {{c.called_by}}  <br/>
+     {% for offer in call.offers %}
+            {{offer.team}} {{offer.price}} ({{offer.cut}})</br>
+    {% endfor %}
+    <br/>
+    <hr />
+{% endfor %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h2>Nuova chiamata</h2>
+
+<h5>{{call.player}} - {{call.called_by}}</h5><br/>
+<br/>
+<i>Altre chiamate</i>
+{% for c in open %}
+    {{c.player}} - {{c.called_by}} <br/>
+{% endfor %}
+</body>
+</html>

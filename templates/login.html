@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Login</h1>
+
+        {% if failed %}
+
+        <strong>Login failed!</strong> Check your credentials and try again.
+
+        {% endif %}
+
+        <form class="form-inline " action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" value="{{ username }}" class="form-control" name="username" id="username"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password"/>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

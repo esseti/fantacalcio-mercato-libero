@@ -1,0 +1,41 @@
+application: st-ml-gae
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /css
+  static_dir: templates/css
+
+- url: /js
+  static_dir: templates/js
+
+- url: /tasks/.*
+  script: cron.app
+#  login: admin
+
+- url: /login
+  script: main.app
+  secure: always
+
+- url: .*
+  script: main.app
+
+- url: /remoteapi.*
+  script: google.appengine.ext.remote_api.handler.application
+  login: admin
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: latest
+
+builtins:
+- remote_api: on
+

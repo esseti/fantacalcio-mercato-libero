@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Offerta</h1>
+
+        <form class="form-inline" action="/call" method="POST">
+            <div class="form-group">
+                <label for="giocatore">Giocatore</label>
+                <input type="text" id="giocatore" name="giocatore" class="form-control"/>
+            </div>
+            <button type="submit" class="btn">Invia</button>
+        </form>
+    </div>
+</div>
+<script src="/js/typeahead.js"></script>
+<script src="http://fantaska.altervista.org/js/fcmQueryFunzioni.js" type="text/javascript"></script>
+<script src="http://fantaska.altervista.org/js/fcmQueryQ14.js"></script>
+<script>
+
+    giocatori = new Array()
+    function giocatore(type) {
+        vals = type.ListaValori.split("%");
+        str = "";
+        for (var i = 0; i < 3; i++) {
+            if (i == 0) {
+                nome_cognome = vals[i].split("&nbsp;");
+                str += nome_cognome[0] + " " + nome_cognome[1] + " ";
+            } else {
+                str += vals[i] + " "
+            }
+
+        }
+        return str;
+    };
+
+    for (var i = 1; i < a.length; i++) {
+        giocatori[i - 1] = giocatore(a[i]);
+    }
+    ;
+
+    $('#giocatore').typeahead({
+        items: 10,
+        source: giocatori
+    })
+
+
+</script>
+{% endblock %}

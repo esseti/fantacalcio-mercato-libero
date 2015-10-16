@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Offerta</h1>
+
+        <form class="form-inline" action="/offer/{{call}}" method="POST">
+            <div class="form-group">
+                <label for="offerta" >offerta</label>
+                <input type="text" id="offerta"  name="offerta" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="taglio">taglio</label>
+                <input type="text" id="taglio" name="taglio" class="form-control"/>
+            </div>
+            <button type="submit" class="btn">Invia</button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
