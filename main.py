@@ -20,19 +20,26 @@ import os
 from google.appengine.ext import deferred
 
 from google.appengine.ext.ndb.key import Key
-
 from google.appengine.ext.webapp import template
-
 import webapp2
 import jinja2
 from webapp2_extras import auth, sessions
+
 from webapp2_extras.auth import InvalidPasswordError, InvalidAuthIdError
 
 from cron import sendMailCall
-
 from models import Call, Config, Offer
 
 
+# some support functions
+def is_open_or_close():
+    c = Config.query().get()
+    if not c:
+        return False
+    return c.is_open
+
+
+# code found online
 def user_required(handler):
     """
       Decorator that checks if there's a user associated with the current session.
@@ -47,17 +54,6 @@ def user_required(handler):
             return handler(self, *args, **kwargs)
 
     return check_login
-
-
-def is_open_or_close():
-    c = Config.query().get()
-    if not c:
-        return False
-    return c.is_open
-
-
-def dict_list(l_in, user=None):
-    return [e.to_dict(user) for e in l_in]
 
 
 class BaseHandler(webapp2.RequestHandler):
@@ -168,11 +164,13 @@ class OfferHandler(BaseHandler):
 
     @user_required
     def post(self, call):
+        ids = Offer.allocate_ids(size=1)
+
         user = self.user
         call = Key(urlsafe=call).get()
         taglio = self.request.get('taglio')
         offerta = self.request.get('offerta')
-        o = Offer()
+        o = Offer(id=ids[0])
         o.team = user.key
         o.cut = taglio
         o.price = int(offerta)
@@ -190,30 +188,24 @@ class CallHandler(BaseHandler):
 
     @user_required
     def post(self):
+        # we need to create the id before, GAE is slow at this
+        ids = Call.allocate_ids(size=1)
         user = self.user
-        call = Call()
+        call = Call(id=ids[0])
         call.player = self.request.get('giocatore')
         call.called_by = user.key
         call.put()
-        sendMailCall(call)
-        # deferred.defer(sendMailOffer, call)
-        self.render_template('message.html', params=dict(message="Chiamata ricevuta, e' il momento di fare l'offerta"))
-        # call = Key(urlsafe=call).get()
-        # taglio = self.request.get('taglio')
-        # offerta = self.request.get('offerta')
-        # o = Offer()
-        # o.team = user.key
-        # o.cut = taglio
-        # o.price = int(offerta)
-        # o.put()
-        # call.offers.append(o.key)
-        # call.put()
-        # self.render_template('message.html', params=dict(message="offerta ricevuta"))
+        # deffer the task
+        # sendMailCall(call)
+        deferred.defer(sendMailCall, call=call)
+        # redirect to Offer
+        self.redirect(self.uri_for('offer', call=call.key.urlsafe()))
 
 
 class DeleteHandler(BaseHandler):
     @user_required
     def get(self, call):
+        # that's bad approach, but it's the fastest one
         call = Key(urlsafe=call).get()
         user = self.user
         o = None
@@ -242,7 +234,7 @@ class MainHandler(BaseHandler):
     def get(self):
         calls_open = Call.query(Call.status == "OPEN").fetch()
         calls_past = Call.query(Call.status == "CLOSED").fetch()
-        template_values = dict(open=dict_list(calls_open, self.user), past=dict_list(calls_past),
+        template_values = dict(open=[e.to_dict(self.user) for e in calls_open], past=[e.to_dict() for e in calls_past],
                                is_open=is_open_or_close())
         self.render_template('index.html', template_values)
 

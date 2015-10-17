@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<h2>Nuova chiamata</h2>
+{% extends "basemail.html" %}
+{% block content %}
+<div class="row ">
+    <div class="col-sm-12">
+        <h1><a href="https://st-ml-gae.appspot.com ">Fantaska servizio Mercato libero</a></h1>
+        <h2>Nuova chiamata</h2>
+        <h3>{{call.player}} - {{call.called_by}}</h3>
+    </div>
+</div>
+<div class="row ">
+    <h4>Altre chiamate</h4>
+    {% for c in open %}
+    <div class="col-sm-12">
+        {{c.player}} - {{c.called_by}}
+    </div>
+    {% endfor %}
+</div>
 
-<h5>{{call.player}} - {{call.called_by}}</h5><br/>
-<br/>
-<i>Altre chiamate</i>
-{% for c in open %}
-    {{c.player}} - {{c.called_by}} <br/>
-{% endfor %}
-</body>
-</html>
+{%endblock%}

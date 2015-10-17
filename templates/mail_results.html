@@ -1,18 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<h2>>Risultati</h2>
-{% for c in open %}
-    {{c.player}} - {{c.called_by}}  <br/>
-     {% for offer in call.offers %}
-            {{offer.team}} {{offer.price}} ({{offer.cut}})</br>
-    {% endfor %}
-    <br/>
-    <hr />
+{% extends "basemail.html" %}
+{% block content %}
+<div class="row ">
+    <div class="col-sm-12">
+        <h1><a href="https://st-ml-gae.appspot.com ">Fantaska servizio Mercato libero</a></h1>
+
+        <h2>Risutlati della settimana</h2>
+    </div>
+
+</div>
+{% for call in open %}
+<div class="row ">
+    <div class="col-sm-12">
+        <h3>{{call.player}} - {{call.called_by}}</h3>
+        {% for offer in call.offers %}
+        <div class="col-sm-12">
+            {{offer.team}} {{offer.price}} ({{offer.cut}})
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endfor %}
-</body>
-</html>
+{%endblock%}

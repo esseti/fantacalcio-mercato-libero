@@ -1,0 +1,10 @@
+cron:
+- description: cron job for mail result
+  url: /tasks/mail
+  schedule: every thursday 20:00
+  timezone: Europe/Rome
+
+- description: cron for stop offers
+  url: /tasks/stop
+  schedule: every tuesday 20:00
+  timezone: Europe/Rome

@@ -17,7 +17,7 @@ handlers:
 
 - url: /tasks/.*
   script: cron.app
-#  login: admin
+  login: admin
 
 - url: /login
   script: main.app
@@ -38,4 +38,4 @@ libraries:
 
 builtins:
 - remote_api: on
-
+- deferred: on

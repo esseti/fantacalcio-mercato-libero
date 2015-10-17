@@ -30,11 +30,15 @@ class Call(ndb.Model):
         result['called_by'] = self.called_by.get().username
         ofs = []
         offers = ndb.get_multi(self.offers)
+        print offers
+        print self.offers
         offers = sorted(offers, key=lambda o: o.price)
         for offer in offers:
             if user:
                 if offer.team == user.key:
                     ofs.append(offer.to_dict())
+            else:
+                ofs.append(offer.to_dict())
         result['offers'] = ofs
         result['id'] = self.key.urlsafe()
         return result
