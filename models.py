@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+#
+# Copyright Stefano Tranquillini - stefanotranquillini.me
+# GNU GPL v2.0 
+#
+
 from google.appengine.ext import ndb
 from webapp2_extras.appengine.auth.models import User
 
-__author__ = 'stefano'
+__author__ = 'Stefano Tranquillini'
 
 
 class Offer(ndb.Model):
