@@ -19,6 +19,10 @@ handlers:
   script: cron.app
   login: admin
 
+# - url: /_ah/mail/.+
+#   script: mail_handler.app
+#   login: admin
+
 - url: /login
   script: main.app
   secure: always
@@ -39,3 +43,6 @@ libraries:
 builtins:
 - remote_api: on
 - deferred: on
+
+# inbound_services:
+# - mail
