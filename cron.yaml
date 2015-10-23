@@ -1,6 +1,6 @@
 cron:
 - description: cron job for mail result
-  url: /tasks/mail
+  url: /tasks/result
   schedule: every thursday 20:00
   timezone: Europe/Rome
 
