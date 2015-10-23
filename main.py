@@ -3,6 +3,8 @@
 # Copyright Stefano Tranquillini - stefanotranquillini.me
 # GNU GPL v2.0 
 #
+from google.appengine.api import users
+
 __author__ = 'Stefano Tranquillini'
 
 import os
@@ -25,6 +27,9 @@ from models import Call, Config, Offer
 def is_open_or_close():
     c = Config.query().get()
     if not c:
+        c = Config()
+        c.is_open = False
+        c.put()
         return False
     return c.is_open
 
@@ -38,7 +43,10 @@ def user_required(handler):
 
     def check_login(self, *args, **kwargs):
         auth = self.auth
-        if not auth.get_user_by_session():
+        g_user = None
+        if users.get_current_user():
+            g_user = self.user_model.get_by_auth_id(users.get_current_user().email())
+        if not g_user and not auth.get_user_by_session():
             self.redirect(self.uri_for('login'), abort=True)
         else:
             return handler(self, *args, **kwargs)
@@ -74,8 +82,11 @@ class BaseHandler(webapp2.RequestHandler):
         :returns
           The instance of the user model associated to the logged in user.
         """
-        u = self.user_info
-        return self.user_model.get_by_id(u['user_id']) if u else None
+        if users.get_current_user():
+            return self.user_model.get_by_auth_id(users.get_current_user().email())
+        else:
+            u = self.user_info
+            return self.user_model.get_by_id(u['user_id']) if u else None
 
     @webapp2.cached_property
     def user_model(self):
@@ -93,6 +104,8 @@ class BaseHandler(webapp2.RequestHandler):
     def render_template(self, view_filename, params={}):
         if self.user:
             params['username'] = self.user.username
+            if users.get_current_user():
+                params['logout'] = users.create_logout_url('/')
         path = os.path.join(os.path.dirname(__file__), 'templates', view_filename)
         self.response.out.write(template.render(path, params))
 
@@ -134,9 +147,16 @@ class LoginHandler(BaseHandler):
 
     def _serve_page(self, failed=False):
         username = self.request.get('username')
+        error = None
+        if users.get_current_user() and not self.user_model.get_by_auth_id(users.get_current_user().email()):
+            error = "l'utente google non e' abilitato a usare questo sito. Fare logout"
         params = {
             'username': username,
-            'failed': failed
+            'failed': failed,
+            'google_login': users.create_login_url('/'),
+            'error': error,
+            'google_logout': users.create_logout_url(
+                '/')
         }
         self.render_template('login.html', params)
 
@@ -238,7 +258,6 @@ app = webapp2.WSGIApplication([
     webapp2.Route('/delete/<call>', DeleteHandler, name='offer_delete'),
     webapp2.Route('/offer/<call>', OfferHandler, name='offer'),
     webapp2.Route('/call', CallHandler, name='call'),
-
     webapp2.Route('/login', LoginHandler, name='login'),
     webapp2.Route('/logout', LogoutHandler, name='logout'),
     webapp2.Route('/', MainHandler, name='home'),

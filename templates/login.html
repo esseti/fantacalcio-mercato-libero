@@ -2,8 +2,15 @@
 
 {% block content %}
 <div class="row">
+    <h1>Login</h1>
+    {% if error %}
     <div class="col-sm-12">
-        <h1>Login</h1>
+        <div class="alert alert-danger" role="alert">{{error}}  <a class="btn btn-danger" href="{{google_logout}}">Logout</a></div>
+
+    </div>
+    {% else %}
+    <div class="col-sm-6">
+
 
         {% if failed %}
 
@@ -11,7 +18,7 @@
 
         {% endif %}
 
-        <form class="form-inline " action="/login" method="POST">
+        <form class="form " action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" value="{{ username }}" class="form-control" name="username" id="username"/>
@@ -22,7 +29,13 @@
             </div>
             <button type="submit" class="btn">Login</button>
         </form>
+
     </div>
+    <div class="col-sm-6 right">
+        <div><b>Usa google</b></div>
+        <a class="btn btn-danger" href="{{google_login}}">Sign in with google</a>
+    </div>
+       {%endif%}
 </div>
 
 {% endblock %}
