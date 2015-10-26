@@ -226,7 +226,6 @@ class DeleteHandler(BaseHandler):
             j += 1
             t_offer = offer.get()
             if t_offer.team == user.key:
-                print 'found'
                 o = offer
                 i = j
                 break
