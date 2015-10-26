@@ -60,7 +60,6 @@ def sendMailResult():
     if len(calls_open) > 0:
         path = os.path.join(os.path.dirname(__file__), 'templates', 'mail_results.html')
         params = dict(open=[e.to_dict() for e in calls_open])
-        print params
         res = template.render(path, params)
         for o in calls_open:
             o.status = "CLOSED"
